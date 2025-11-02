@@ -3,16 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
 
- public function __construct(){
-  parent::__construct();
-  $this->load->database();
-  $this->load->helper(['url']); // hapus 'auth'
-  // require_login();  // MATIKAN
-}
-
+  public function __construct(){
+    parent::__construct();
+    $this->load->database();
+    $this->load->helper(['url','number']);
+    // require_login(); // dimatikan sesuai instruksi
+  }
 
   public function index(){
-    // Identitas toko (bisa dipindah ke tabel setting jika mau)
+    $data = [];
+    $data['title']      = 'Dashboard';
     $data['nama_mitra'] = 'Laundry Azzahra';
     $data['alamat']     = 'Jln. Manuruki 2 No. 79, Makassar';
 
@@ -27,11 +27,11 @@ class Dashboard extends CI_Controller {
       WHERE DATE(tanggal_masuk)=?
     ", [$today])->row();
 
-    $data['kpi_masuk']   = (int)$q->masuk;
-    $data['kpi_proses']  = (int)$q->proses;
-    $data['kpi_selesai'] = (int)$q->selesai;
+    $kpi_masuk   = (int)($q->masuk   ?? 0);
+    $kpi_proses  = (int)($q->proses  ?? 0);
+    $kpi_selesai = (int)($q->selesai ?? 0);
 
-    // Pendapatan hari ini (PAID, transaksi terbaru per pesanan)
+    // Pendapatan hari ini (ambil transaksi terbaru per pesanan, hanya PAID)
     $sub = "
       SELECT t1.*
       FROM transaksi t1
@@ -48,9 +48,16 @@ class Dashboard extends CI_Controller {
       WHERE DATE(p.tanggal_masuk)=?
     ", [$today])->row();
 
-    $data['kpi_pendapatan'] = (int)$sum->pendapatan;
+    $kpi_pendapatan = (int)($sum->pendapatan ?? 0);
 
-    // Daftar harga ringkas (ambil 8 layanan aktif teratas)
+    // ====== Samakan nama variabel dengan yang dipakai di view ======
+    $data['total_pelanggan']  = (int)$this->db->count_all('pelanggan');
+    $data['pesanan_hari_ini'] = $kpi_masuk;
+    $data['sedang_proses']    = $kpi_proses;
+    $data['selesai_hari_ini'] = $kpi_selesai;
+    $data['omzet_hari_ini']   = $kpi_pendapatan;
+
+    // Daftar harga ringkas (8 layanan aktif)
     $harga = $this->db->query("
       SELECT nama, tipe_satuan, harga_per_satuan
       FROM layanan
@@ -59,7 +66,6 @@ class Dashboard extends CI_Controller {
       LIMIT 8
     ")->result();
 
-    // Ubah ke format yang dipakai view ($daftar_harga)
     $data['daftar_harga'] = array_map(function($r){
       return [
         'nama'   => $r->nama,
@@ -68,6 +74,14 @@ class Dashboard extends CI_Controller {
       ];
     }, $harga);
 
-    $this->load->view('dashboard', $data);
+    // Pesanan terbaru (untuk tabel)
+    $data['pesanan_terbaru'] = $this->db->order_by('tanggal_masuk','DESC')
+                                        ->limit(5)->get('pesanan')->result();
+
+    // ==== Render dengan layout ====
+    $this->load->view('layouts/header',  $data);
+    $this->load->view('layouts/sidebar', $data);
+    $this->load->view('dashboard/index', $data);
+    $this->load->view('layouts/footer');
   }
 }
