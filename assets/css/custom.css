@@ -1,0 +1,164 @@
+/* ====== Brand colors (boleh diganti nanti) ====== */
+:root{
+  --brand-start:#00b4d8; /* biru muda */
+  --brand-end:#00c896;   /* hijau toska */
+  --brand-mid:#00c2b3;   /* transisi */
+  --bg-soft-1:#f6fbff;   /* putih kebiruan halus */
+  --bg-soft-2:#f3fff9;   /* putih kehijauan halus */
+  --card-border:#e9eef5; /* garis tipis card */
+}
+
+/* ====== Sidebar gradient ====== */
+.main-sidebar{
+  background: linear-gradient(180deg, var(--brand-start) 0%, var(--brand-mid) 50%, var(--brand-end) 100%) !important;
+}
+.main-sidebar .brand-link{
+  background: transparent !important;
+  color:#fff !important;
+  font-weight:600;
+}
+.main-sidebar .nav-sidebar .nav-link{
+  color: rgba(255,255,255,.9) !important;
+}
+.main-sidebar .nav-sidebar .nav-link:hover{
+  background: rgba(255,255,255,.12) !important;
+  color:#fff !important;
+}
+.main-sidebar .nav-sidebar > .nav-item > .nav-link.active{
+  background: rgba(255,255,255,.18) !important;
+  color:#fff !important;
+  border-radius:10px;
+}
+
+/* ====== Topbar gradient tipis ====== */
+.main-header.navbar{
+  background: linear-gradient(90deg, var(--brand-start), var(--brand-end)) !important;
+  color:#fff;
+}
+.main-header.navbar .nav-link{ color:#fff !important; }
+.main-header.navbar .form-control{
+  background: rgba(255,255,255,.9);
+  border: none;
+}
+
+/* ====== Latar belakang area konten lembut ====== */
+.content-wrapper{
+  background: linear-gradient(180deg, var(--bg-soft-1), var(--bg-soft-2)) !important;
+}
+
+/* ====== Card putih: tidak polos (rounded + border + shadow) ====== */
+.card, .small-box.bg-white{
+  border:1px solid var(--card-border);
+  border-radius:16px;
+  box-shadow: 0 8px 24px rgba(0, 181, 167, .06);
+}
+.card .card-header{
+  background:#fff !important;
+  border-bottom:1px solid var(--card-border);
+  border-top-left-radius:16px;
+  border-top-right-radius:16px;
+}
+
+/* ====== Angka di small box lebih kuat ====== */
+.small-box .inner h3{
+  font-weight:700;
+  letter-spacing:.3px;
+}
+
+/* ====== Table header halus ====== */
+.table thead.thead-light th{
+  background:#f2f7fb;
+  border-bottom:1px solid var(--card-border);
+}
+
+/* ====== Scrollbar halus (opsional) ====== */
+*{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,.25) transparent;
+}
+*::-webkit-scrollbar{ height:8px; width:8px; }
+*::-webkit-scrollbar-thumb{ background: rgba(0,0,0,.2); border-radius:8px; }
+/* ===== Warna utama ===== */
+:root {
+  --brand-blue: #00b4d8;
+  --brand-green: #00c896;
+  --card-shadow: rgba(0, 0, 0, 0.05);
+  --card-border: #e8edf3;
+}
+
+/* ===== Sidebar gradient ===== */
+.main-sidebar {
+  background: linear-gradient(180deg, var(--brand-blue) 0%, var(--brand-green) 100%) !important;
+  color: #fff !important;
+}
+.main-sidebar .nav-sidebar .nav-link {
+  color: rgba(255,255,255,0.9) !important;
+  transition: all 0.2s ease-in-out;
+}
+.main-sidebar .nav-sidebar .nav-link:hover {
+  background: rgba(255,255,255,0.15) !important;
+  color: #fff !important;
+}
+.main-sidebar .nav-sidebar .nav-link.active {
+  background: rgba(255,255,255,0.2) !important;
+  border-radius: 10px;
+  color: #fff !important;
+}
+
+/* ===== Navbar atas ===== */
+.main-header.navbar {
+  background: linear-gradient(90deg, var(--brand-blue), var(--brand-green)) !important;
+  color: #fff;
+}
+.main-header .nav-link {
+  color: #fff !important;
+}
+
+/* ===== Background konten lembut ===== */
+.content-wrapper {
+  background: linear-gradient(180deg, #f6fbff 0%, #f3fff9 100%) !important;
+}
+
+/* ===== Card styling ===== */
+.card {
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px var(--card-shadow);
+}
+.card-header {
+  background: #fff !important;
+  border-bottom: 1px solid var(--card-border);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+/* Search box di topbar */
+.main-header .form-control{
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+/* Transisi global kecil */
+a, .btn, .nav-link, .card, .small-box { transition: all .18s ease-in-out; }
+
+/* Hover di item menu */
+.main-sidebar .nav-sidebar .nav-link:hover {
+  transform: translateX(2px);
+}
+
+/* Card & small-box sedikit “terangkat” saat hover */
+.card:hover, .small-box.bg-white:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0, 181, 167, .08);
+}
+
+/* Badge biar konsisten */
+.badge { border-radius: 20px; padding: .35rem .6rem; font-weight: 600; letter-spacing:.2px; }
+.small-box.bg-white .inner p { color:#7a8aa0; font-weight:600; }
+.small-box.bg-white { padding: 10px 14px; }
+
+.main-header.navbar{
+  backdrop-filter: saturate(140%) blur(6px);
+  background: linear-gradient(90deg, rgba(0,180,216,.92), rgba(0,200,150,.92)) !important;
+}
+
