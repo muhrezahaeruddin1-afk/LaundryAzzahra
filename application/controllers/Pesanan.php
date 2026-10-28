@@ -44,9 +44,9 @@ class Pesanan extends CI_Controller {
     $data['pesanan']     = $this->db->query($sql, $args)->result();
     $data['status_now']  = $st ?: 'ALL';
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
     $this->load->view('pesanan_view', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   public function ubah_status($id){

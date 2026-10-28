@@ -18,9 +18,9 @@ class Pelanggan extends CI_Controller {
     $data['q'] = $q ?: '';
     $data['rows'] = $this->Pelanggan_model->all($q);
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
     $this->load->view('pelanggan_index', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   // FORM TAMBAH
@@ -28,11 +28,12 @@ class Pelanggan extends CI_Controller {
     $data['title']  = 'Tambah Pelanggan';
     $data['active'] = 'pelanggan';
     $data['data']   = (object)['id'=>null,'nama'=>'','telp'=>'','alamat'=>''];
-    $data['mode']   = 'create';
+    $data['mode']   = 'create'; 
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
+    $this->load->view('layouts/sidebar');
     $this->load->view('pelanggan_form', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   // SIMPAN BARU
@@ -55,9 +56,10 @@ class Pelanggan extends CI_Controller {
     $data['data']   = $row;
     $data['mode']   = 'edit';
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
+    $this->load->view('layouts/sidebar', $data);
     $this->load->view('pelanggan_form', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   // UPDATE
@@ -87,8 +89,9 @@ class Pelanggan extends CI_Controller {
     $data['sum']    = $sum;
     $data['list']   = $list;
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
+    $this->load->view('layouts/sidebar', $data);
     $this->load->view('pelanggan_detail', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 }

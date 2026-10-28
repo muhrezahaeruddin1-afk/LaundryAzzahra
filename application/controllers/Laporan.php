@@ -54,9 +54,9 @@ class Laporan extends CI_Controller {
       'rows'    => $rows,
     ];
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
     $this->load->view('laporan_harian', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   public function bulanan(){
@@ -101,8 +101,9 @@ class Laporan extends CI_Controller {
       'sum'      => $sum,
     ];
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
+    $this->load->view('layouts/sidebar', $data);
     $this->load->view('laporan_bulanan', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 }

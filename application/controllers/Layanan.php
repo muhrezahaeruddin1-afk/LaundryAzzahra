@@ -15,9 +15,9 @@ class Layanan extends CI_Controller {
     $data['active']  = 'layanan';
     $data['layanan'] = $this->Layanan_model->all();
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
     $this->load->view('layanan_index', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   public function create(){
@@ -28,9 +28,10 @@ class Layanan extends CI_Controller {
     ];
     $data['mode']   = 'create';
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
+    $this->load->view('layouts/sidebar', $data);
     $this->load->view('layanan_form', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   public function store(){
@@ -53,9 +54,10 @@ class Layanan extends CI_Controller {
     $data['data']   = $row;
     $data['mode']   = 'edit';
 
-    $this->load->view('partials/header', $data);
+    $this->load->view('layouts/header', $data);
+    $this->load->view('layouts/sidebar', $data);  // TAMBAH SIDEBAR DI SINI
     $this->load->view('layanan_form', $data);
-    $this->load->view('partials/footer');
+    $this->load->view('layouts/footer');
   }
 
   public function update($id){

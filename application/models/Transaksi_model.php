@@ -5,9 +5,6 @@ class Transaksi_model extends CI_Model {
 
   /**
    * Buat transaksi UNPAID.
-   * $total di sini adalah subtotal layanan + (tambahan lain kalau kamu sudah jumlahkan di controller)
-   * $diskon = potongan harga
-   * $biaya  = biaya tambahan (dipakai untuk Express di proyek kamu)
    */
   public function create_unpaid($pesanan_id, $total, $diskon = 0, $biaya = 0, $metode = 'CASH')
   {
@@ -17,7 +14,7 @@ class Transaksi_model extends CI_Model {
       'pesanan_id'     => $pesanan_id,
       'total'          => $total,
       'diskon'         => $diskon,
-      'biaya_tambahan' => $biaya,     // contoh: biaya express
+      'biaya_tambahan' => $biaya,
       'grand_total'    => $grand,
       'metode'         => $metode,
       'status_bayar'   => 'UNPAID',
@@ -48,52 +45,124 @@ class Transaksi_model extends CI_Model {
   }
 
   /**
-   * Data lengkap untuk STRUK:
-   * - Header transaksi (t.*)
-   * - Info pesanan (antar/ambil, estimasi, jarak, biaya_antar, kode)
-   * - Data pelanggan (nama, telp, alamat)
-   * - Daftar item (nama layanan, tipe satuan, qty, subtotal)
+   * Data lengkap untuk STRUK - SESUAIKAN DENGAN STRUKTUR TABEL
    */
   public function detail_for_receipt($trx_id)
   {
-    // HEADER + PESANAN + PELANGGAN
+    // HEADER + PESANAN + PELANGGAN - SESUAI STRUKTUR TABEL
     $sql = "SELECT 
               t.*,
               p.kode,
+              p.tanggal_masuk,
+              p.tanggal_selesai_est,
               p.estimasi_selesai_jam,
               p.metode_terima,
               p.jarak_km,
               p.biaya_antar,
-              pel.nama  AS nama_pelanggan,
+              p.status as status_pesanan,
+              p.berat_kg,
+              p.catatan,
+              pel.nama AS nama_pelanggan,
               pel.telp,
               pel.alamat
             FROM transaksi t
-            JOIN pesanan p      ON p.id  = t.pesanan_id
+            JOIN pesanan p ON p.id = t.pesanan_id
             LEFT JOIN pelanggan pel ON pel.id = p.pelanggan_id
             WHERE t.id = ?";
 
     $trx = $this->db->query($sql, [$trx_id])->row();
 
     if (!$trx) {
-      // kalau id tidak ditemukan, kembalikan kosong biar view tidak error
       return [null, []];
     }
 
-    // DETAIL ITEM (pakai pesanan_detail karena item melekat di pesanan)
+    // DETAIL ITEM
     $items = $this->db->query(
       "SELECT 
-          d.qty, 
-          d.harga_satuan, 
-          d.subtotal, 
+          pd.qty, 
+          pd.subtotal, 
           l.nama, 
-          l.tipe_satuan
-       FROM pesanan_detail d
-       JOIN layanan l ON l.id = d.layanan_id
-       WHERE d.pesanan_id = ?",
+          l.tipe_satuan,
+          l.harga_per_satuan
+       FROM pesanan_detail pd
+       JOIN layanan l ON l.id = pd.layanan_id
+       WHERE pd.pesanan_id = ?",
       [$trx->pesanan_id]
     )->result();
 
     return [$trx, $items];
   }
 
+  /**
+   * Ambil data untuk struk berdasarkan pesanan_id
+   */
+  public function detail_by_pesanan_id($pesanan_id)
+  {
+    // HEADER + PESANAN + PELANGGAN - SESUAI STRUKTUR TABEL
+    $sql = "SELECT 
+              t.*,
+              p.kode,
+              p.tanggal_masuk,
+              p.tanggal_selesai_est,
+              p.estimasi_selesai_jam,
+              p.metode_terima,
+              p.jarak_km,
+              p.biaya_antar,
+              p.status as status_pesanan,
+              p.berat_kg,
+              p.catatan,
+              pel.nama AS nama_pelanggan,
+              pel.telp,
+              pel.alamat
+            FROM pesanan p
+            LEFT JOIN transaksi t ON p.id = t.pesanan_id
+            LEFT JOIN pelanggan pel ON pel.id = p.pelanggan_id
+            WHERE p.id = ?";
+
+    $trx = $this->db->query($sql, [$pesanan_id])->row();
+
+    if (!$trx) {
+      return [null, []];
+    }
+
+    // DETAIL ITEM
+    $items = $this->db->query(
+      "SELECT 
+          pd.qty, 
+          pd.subtotal, 
+          l.nama, 
+          l.tipe_satuan,
+          l.harga_per_satuan
+       FROM pesanan_detail pd
+       JOIN layanan l ON l.id = pd.layanan_id
+       WHERE pd.pesanan_id = ?",
+      [$pesanan_id]
+    )->result();
+
+    return [$trx, $items];
+  }
+
+  /**
+   * Cek apakah transaksi ada
+   */
+  public function exists($trx_id)
+  {
+    return $this->db->get_where('transaksi', ['id' => $trx_id])->num_rows() > 0;
+  }
+
+  /**
+   * Cek apakah pesanan ada
+   */
+  public function pesanan_exists($pesanan_id)
+  {
+    return $this->db->get_where('pesanan', ['id' => $pesanan_id])->num_rows() > 0;
+  }
+
+  /**
+   * Ambil transaksi berdasarkan pesanan_id
+   */
+  public function get_by_pesanan_id($pesanan_id)
+  {
+    return $this->db->get_where('transaksi', ['pesanan_id' => $pesanan_id])->row();
+  }
 }
